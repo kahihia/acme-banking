@@ -8,6 +8,7 @@ namespace Api.Models
         public int Id { get; set; }
         public string AccountNumber { get; set; }
         public AccountTypes AccountType { get; set; }
+        public decimal Balance { get; set; }
     }
 
     /// <summary>

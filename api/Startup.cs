@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Api.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -46,19 +47,25 @@ namespace Api
             app.UseMvc();
         }
 
+        /// <summary>
+        /// Populate in-memroy database with some data.
+        /// </summary>
+        /// <param name="context">ApiContext</param>
         private void AddTestData(ApiContext context)
         {
             // Add accounts
             context.Accounts.Add(new Account
             {
                 AccountNumber = "123456789009876543211234567890OTTF",
-                AccountType = AccountTypes.PersonalChecking
+                AccountType = AccountTypes.PersonalChecking,
+                Balance = 0.0M
             });
 
             context.Accounts.Add(new Account
             {
                 AccountNumber = "123456789009876543211234567890FSSE",
-                AccountType = AccountTypes.PersonalSavings
+                AccountType = AccountTypes.PersonalSavings,
+                Balance = 0.0M
             });
 
             // Add some transactions
@@ -77,15 +84,19 @@ namespace Api
                     Description = depositOrDebit == 0 ? $"Deposit" : $"Debit",
                     Amount = depositOrDebit == 0 ? 3200.00M : random.Next(-100, -1)
                 });
-            }
 
-            for (int i = 0; i < 364; i++)
-            {
-                // Make a savings transfer on the 15th and the 30th.
-                var depositOrDebit = DateTime.Now.AddDays(-i).Day % 15;
-
+                // Tranfer 10% to savings on the 15th and the 30th.
                 if (depositOrDebit == 0)
                 {
+                    context.Transactions.Add(new Transaction
+                    {
+                        AccountId = 1,
+                        Date = DateTime.Now.AddDays(-i),
+                        TransactionType = TransactionTypes.Transfer,
+                        Description = "Transfer to savings",
+                        Amount = -320.00M
+                    });
+
                     context.Transactions.Add(new Transaction
                     {
                         AccountId = 2,
@@ -94,17 +105,17 @@ namespace Api
                         Description = "Deposit",
                         Amount = 320.00M
                     });
-
-                    context.Transactions.Add(new Transaction
-                    {
-                        AccountId = 1,
-                        Date = DateTime.Now.AddDays(-i),
-                        TransactionType = TransactionTypes.Transfer,
-                        Description = "Transfer to savings",
-                        Amount = 320.00M
-                    });
                 }
             }
+
+            context.SaveChanges();
+
+            // Update account balances.
+            var checkingAccount = context.Accounts.Single(a => a.Id == 1);
+            checkingAccount.Balance = context.Transactions.Where(a => a.AccountId == 1).Sum(a => a.Amount);
+
+            var savingsAccount = context.Accounts.Single(a => a.Id == 2);
+            savingsAccount.Balance = context.Transactions.Where(a => a.AccountId == 2).Sum(a => a.Amount);
 
             context.SaveChanges();
         }
