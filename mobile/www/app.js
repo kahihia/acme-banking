@@ -40,13 +40,13 @@ angular.module('app', ['ionic', 'chart.js'])
                     }
                 }
             })
-            .state('app.account-details', {
-                url: '/account-details/:id',
+            .state('app.transactions', {
+                url: '/transactions/:id',
                 cache: false,
                 views: {
                     'menuContent': {
-                        templateUrl: 'components/accounts/details/details.html',
-                        controller: 'AccountDetailsController',
+                        templateUrl: 'components/accounts/transactions/transactions.html',
+                        controller: 'TransactionsController',
                         controllerAs: 'vm'
                     }
                 }
