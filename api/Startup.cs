@@ -82,8 +82,8 @@ namespace Api
                     AccountId = 1,
                     Date = DateTime.Now.AddDays(-i),
                     TransactionType = depositOrDebit == 0 ? TransactionTypes.Deposit : TransactionTypes.Debit,
-                    Description = depositOrDebit == 0 ? $"Deposit" : $"Debit",
-                    SpendingCategory = GetRandomeSpendingCategory(random),
+                    Description = depositOrDebit == 0 ? "Deposit" : "Debit",
+                    SpendingCategory = depositOrDebit == 0 ? "" : GetRandomeSpendingCategory(random),
                     Amount = depositOrDebit == 0 ? 3200.00M : GetRandomDecimal(random, -100, -1)
                 });
 
