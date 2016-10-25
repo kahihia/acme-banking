@@ -1,0 +1,25 @@
+<ion-view view-title="Account Details">
+    <ion-content>
+        <div class="card">
+            <div class="item item-text-wrap">
+                ACME Premium {{ vm.account.accountType | accountType }} {{ vm.account.balance | currency }}
+            </div>
+        </div>
+
+        <ion-list>
+            <ion-item ng-repeat="transaction in vm.account.transactions">
+                <div class="row">
+                    <div class="col-60 col-center">
+                        <h3>{{ transaction.description }}</h3>
+                        <p>{{ transaction.date | date:'mediumDate' }}</p>
+
+                        <p>Category: {{ transaction.spendingCategory }}</p>
+                    </div>
+                    <div class="col-40 col-center">
+                        <h2>Amount: {{ transaction.amount | currency }}</h2>
+                    </div>
+                </div>
+            </ion-item>
+        </ion-list>
+    </ion-content>
+</ion-view>

@@ -9,6 +9,7 @@ namespace Api.Models
         public DateTime Date { get; set; }
         public TransactionTypes TransactionType { get; set; }
         public string Description { get; set; }
+        public string SpendingCategory { get; set; }
         public decimal Amount { get; set; }
     }
 

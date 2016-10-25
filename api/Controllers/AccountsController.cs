@@ -7,6 +7,7 @@ namespace Api.Controllers
 {
     /// <summary>
     /// Account API resource
+    /// For our URL pattern, we'll use {reource}/{identifier}?{queryparams}
     /// </summary>
     [Route("api/[controller]")]
     public class AccountsController : Controller
@@ -33,6 +34,19 @@ namespace Api.Controllers
             var accounts = _context.Accounts.Select(a => a);
 
             return accounts;
+        }
+
+        /// <summary>
+        /// Get account
+        /// </summary>
+        /// <param name="accountId">account id</param>
+        /// <returns>An Account</returns>
+        [HttpGet("{accountId}")]
+        public Account GetAccount(int accountId)
+        {
+            var account = _context.Accounts.SingleOrDefault(a => a.Id == accountId);
+
+            return account;
         }
     }
 }

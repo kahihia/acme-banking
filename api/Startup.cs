@@ -19,6 +19,7 @@ namespace Api
                 .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
                 .AddEnvironmentVariables();
+
             Configuration = builder.Build();
         }
 
@@ -40,7 +41,7 @@ namespace Api
             loggerFactory.AddDebug();
 
             var context = app.ApplicationServices.GetService<ApiContext>();
-            AddTestData(context);
+            SeedDatabase(context);
 
             app.UseCors(builder => builder.WithOrigins("http://localhost:8100"));
 
@@ -48,28 +49,28 @@ namespace Api
         }
 
         /// <summary>
-        /// Populate in-memroy database with some data.
+        /// Seed in-memroy database with data.
         /// </summary>
         /// <param name="context">ApiContext</param>
-        private void AddTestData(ApiContext context)
+        private void SeedDatabase(ApiContext context)
         {
             // Add accounts
             context.Accounts.Add(new Account
             {
-                AccountNumber = "123456789009876543211234567890OTTF",
+                AccountNumber = "1111111111111111111111111111111111",
                 AccountType = AccountTypes.PersonalChecking,
                 Balance = 0.0M
             });
 
             context.Accounts.Add(new Account
             {
-                AccountNumber = "123456789009876543211234567890FSSE",
+                AccountNumber = "2222222222222222222222222222222222",
                 AccountType = AccountTypes.PersonalSavings,
                 Balance = 0.0M
             });
 
             // Add some transactions
-            Random random = new Random();
+            var random = new Random();
 
             for (int i = 0; i < 364; i++)
             {
@@ -82,7 +83,8 @@ namespace Api
                     Date = DateTime.Now.AddDays(-i),
                     TransactionType = depositOrDebit == 0 ? TransactionTypes.Deposit : TransactionTypes.Debit,
                     Description = depositOrDebit == 0 ? $"Deposit" : $"Debit",
-                    Amount = depositOrDebit == 0 ? 3200.00M : random.Next(-100, -1)
+                    SpendingCategory = GetRandomeSpendingCategory(random),
+                    Amount = depositOrDebit == 0 ? 3200.00M : GetRandomDecimal(random, -100, -1)
                 });
 
                 // Tranfer 10% to savings on the 15th and the 30th.
@@ -118,6 +120,31 @@ namespace Api
             savingsAccount.Balance = context.Transactions.Where(a => a.AccountId == 2).Sum(a => a.Amount);
 
             context.SaveChanges();
+        }
+
+        /// <summary>
+        /// Get a random deciaml for seed transactions.
+        /// </summary>
+        /// <param name="random">Random</param>
+        /// <param name="min">min value</param>
+        /// <param name="max">max value</param>
+        /// <returns></returns>
+        private decimal GetRandomDecimal(Random random, int min, int max)
+        {
+            return Math.Round(random.Next(min, max) + (decimal)random.NextDouble(), 2);
+        }
+
+        /// <summary>
+        /// Get a random spending category for deposits.
+        /// </summary>
+        /// <returns>A random spending category.</returns>
+        private string GetRandomeSpendingCategory(Random random)
+        {
+            var spendingCategories = new string[] { "Groceries", "Fuel", "Entertainment", "Utilities", "Membership", "Travel", "Medical" };
+
+            var randomSpendingCategory = spendingCategories[random.Next(0, spendingCategories.Length)];
+
+            return randomSpendingCategory;
         }
     }
 }

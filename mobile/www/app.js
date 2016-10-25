@@ -1,11 +1,6 @@
-// Ionic Starter App
-
-// angular.module is a global place for creating, registering and retrieving Angular modules
-// 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
-// the 2nd parameter is an array of 'requires'
-// 'starter.controllers' is found in controllers.js
-angular.module('app', ['ionic'])
-
+angular.module('app', ['ionic', 'chart.js'])
+// For the base API URL, we're using the proxy defined in the ionic.config.json
+.constant('ACME_API_URL', '')
 .run(function($ionicPlatform) {
         $ionicPlatform.ready(function() {
             // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
@@ -36,6 +31,7 @@ angular.module('app', ['ionic'])
             })
             .state('app.accounts', {
                 url: '/accounts',
+                cache: false,
                 views: {
                     'menuContent': {
                         templateUrl: 'components/accounts/accounts.html',
@@ -44,16 +40,28 @@ angular.module('app', ['ionic'])
                     }
                 }
             })
-            .state('app.profile', {
-                url: '/profile',
+            .state('app.account-details', {
+                url: '/account-details/:id',
+                cache: false,
                 views: {
                     'menuContent': {
-                        templateUrl: 'components/profile/profile.html',
-                        controller: 'ProfileController'
+                        templateUrl: 'components/accounts/details/details.html',
+                        controller: 'AccountDetailsController',
+                        controllerAs: 'vm'
+                    }
+                }
+            })
+            .state('app.home', {
+                url: '/home',
+                views: {
+                    'menuContent': {
+                        templateUrl: 'components/home/home.html',
+                        controller: 'HomeController',
+                        controllerAs: 'vm'
                     }
                 }
             });
 
         // if none of the above states are matched, use this as the fallback
-        $urlRouterProvider.otherwise('/app/profile');
+        $urlRouterProvider.otherwise('/app/home');
     });

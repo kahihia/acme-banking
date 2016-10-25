@@ -1,7 +1,7 @@
 <ion-view view-title="Accounts">
     <ion-content>
         <ion-list>
-            <ion-item ng-repeat="account in vm.accounts">
+            <ion-item ng-repeat="account in vm.accounts" href="#/app/account-details/{{ account.id }}">
                 <h3>{{ account.accountType | accountType }} (...{{ account.accountNumber | limitTo: 4 : 30 }})</h3>
                 <p>Account Balance: {{ account.balance | currency }}</p>
             </ion-item>

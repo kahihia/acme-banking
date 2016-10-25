@@ -4,5 +4,11 @@
   "watchPatterns": [
     "www/**/*",
     "!www/lib/**/*"
+  ],
+  "proxies": [
+    {
+      "path": "/api",
+      "proxyUrl": "http://localhost:5000/api"
+    }
   ]
 }

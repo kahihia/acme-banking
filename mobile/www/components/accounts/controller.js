@@ -10,14 +10,14 @@
         var vm = this;
         vm.accounts = [];
 
-        inti();
+        activate();
 
-        function inti() {
+        function activate() {
             accountService.getAccounts()
                 .then(function(response) {
                     vm.accounts = response.data;
                 }).catch(function(err) {
-                    console.log('err: ', err)
+                    console.log(err);
                 });
         }
     };
