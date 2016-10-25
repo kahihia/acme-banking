@@ -1,1 +1,8 @@
 /* Empty. Add your own CSS if you like */
+
+.home-bg {
+    background: url(../img/currency_dollar_green.png) no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    background-size: 60%;
+}
